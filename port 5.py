@@ -128,6 +128,9 @@ def AdicionarAtendimentos(id_pac,data_at,peso,altura,desc,Manchester):
     VALUES (?,?,?,?,?,?)""",(id_pac,data_at,peso,altura,desc,Manchester))
     con.commit()
 
+def AdicionarTipoServico(tipo_serv):
+    cur.execute("""INSERT INTO tipo_servico (Tipo_servico) VALUES (?);""",(tipo_serv,))
+
 def AdicionarAtendimentos_servico(at_id,serv_Id,data):
     cur.execute(""" INSERT INTO atendimento_servico (Atendimento_ID,Servico_ID,Data) 
     VALUES (?,?,?)""",(at_id,serv_Id,data))
@@ -138,9 +141,9 @@ def AdicionarAtendimentos_servico(at_id,serv_Id,data):
     AND Data = (?);""",(at_id,serv_Id,data))
     con.commit()
 
-def AdicionarServico(TUSS,Desc,Valor):
-    cur.execute(""" INSERT INTO servico (Codigo_TUSS,Descricao,Valor) 
-    VALUES (?,?,?)""",(TUSS,Desc,Valor))
+def AdicionarServico(TUSS,Desc,Valor,tipo_serv):
+    cur.execute(""" INSERT INTO servico (Codigo_TUSS,Descricao,Valor,Tipo_servico_ID) 
+    VALUES (?,?,?,?)""",(TUSS,Desc,Valor,tipo_serv))
     con.commit()
 
 def LerTabela():
@@ -209,12 +212,18 @@ def ProduzirDados():
     AdicionarAtendimentos(4,'2020-10-26',75,1.70,'O paciente fez xyz',3)
     AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',2)
     AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',1)
-
-
-    # AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10)
-    # AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100)
-    # AdicionarServico(30207045,'Redução de fratura de seio frontal',1000)
-    # AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000)
+    AdicionarTipoServico('Exames de Diagnósticos Por Imagem')
+    AdicionarTipoServico('Exames de Sangue')
+    AdicionarTipoServico('Cirurgia de Alta Complexidade')
+    AdicionarTipoServico('Consulta Médica')
+    AdicionarTipoServico('Terapias')
+    AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10,1)
+    AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100,2)
+    AdicionarServico(30207045,'Redução de fratura de seio frontal',1000,3)
+    AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000,4)
+    AdicionarServico(20101074,'Avaliacao nutricional inclui consulta',500.50,5)
+    AdicionarServico(30203023,'Tumor de lingua tratamento cirurgico',1500.25,1)
+    AdicionarServico(30718015,'Amputacao ao nivel do braco tratamento cirurgico',1030.0,2)
     # AdicionarAtendimentos_servico(1,1,'2015-05-22') #m
     # AdicionarAtendimentos_servico(1,2,'2015-05-22') #M
     # AdicionarAtendimentos_servico(3,1,'2015-05-22') #m
