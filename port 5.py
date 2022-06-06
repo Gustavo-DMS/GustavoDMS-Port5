@@ -40,6 +40,8 @@ def CriarAtendimento_Servico():
     Servico_ID INTEGER NOT NULL,
     Data DATE NOT NULL,
     Valor_do_servico FLOAT,
+    Medicos_ID INT NOT NULL,
+    FOREIGN KEY (Medicos_ID) REFERENCES medicos(ID),
     FOREIGN KEY (Atendimento_ID) REFERENCES atendimento(ID),
     FOREIGN KEY (Servico_ID) REFERENCES servico(ID),
     PRIMARY KEY (Atendimento_ID,Servico_ID,Data)
@@ -51,10 +53,36 @@ def CriarServico():
     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     Codigo_TUSS VARCHAR(45) NOT NULL,
     Descricao VARCHAR(45) NOT NULL,
-    Valor FLOAT NOT NULL
+    Valor FLOAT NOT NULL,
+    Tipo_servico_ID INTEGER NOT NULL,
+    FOREIGN KEY (Tipo_Servico) REFERENCES tipo_servico(ID)
     );
     """)
 
+def CriarMedicoEspecialidades():
+    cur.execute("""CREATE TABLE medicos_especialidades (
+    Medicos_ID INTEGER NOT NULL,
+    Especialidades_ID INTEGER NOT NULL,   
+    FOREIGN KEY (Especialidades_ID) REFERENCES especialidades(ID),
+    FOREIGN KEY (Medicos_ID) REFERENCES medicos(ID) 
+    );
+    """)
+
+def CriarMedicos():
+    cur.execute("""CREATE TABLE medico(
+    ID INTEGER NOT NULL PRIMARY KEY AUTOCREMENT,
+    Nome VARCHAR(100) NOT NULL,
+    CRM VARCHAR(10)
+    );
+    """)
+
+def CriarEspecialidades():
+    cur.execute("""CREATE TABLE especialidades (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOCREMENT,
+    Nome VARCHAR(45) NOT NULL,
+    CID10_CAT VARCHAR(8) NOT NULL
+    );
+    """)
 def AdicionarPacientes(nome,rg,cpf,nasc,sexo):
     cur.execute(""" INSERT INTO pacientes (nome,rg,cpf,nasc,sexo)
     VALUES (?,?,?,?,?)""",(nome,rg,cpf,nasc,sexo))
