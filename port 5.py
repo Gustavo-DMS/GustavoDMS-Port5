@@ -89,6 +89,7 @@ def CriarEspecialidades():
     CID10_CAT VARCHAR(8) NOT NULL
     );
     """)
+
 def CriarServicosEspecialidades():
     cur.execute("""CREATE TABLE servicos_especialidades (
     Servico_ID INTEGER NOT NULL,
@@ -116,7 +117,6 @@ def CriarTipoServico():
     Tipo_Servico VARCHAR(45)
     );
     """)
-
 
 def AdicionarPacientes(nome,rg,cpf,nasc,sexo):
     cur.execute(""" INSERT INTO pacientes (nome,rg,cpf,nasc,sexo)
@@ -160,6 +160,30 @@ def LerTabela():
     cur.execute("""SELECT * FROM servico; """)
     for linha in cur.fetchall():
         print(linha)
+    print('medicos_especialidades-------------------------------------')
+    cur.execute("""SELECT * FROM medicos_especialidades; """)
+    for linha in cur.fetchall():
+        print(linha)
+    print('medicos-------------------------------------')
+    cur.execute("""SELECT * FROM medicos; """)
+    for linha in cur.fetchall():
+        print(linha)
+    print('especialidades-------------------------------------')
+    cur.execute("""SELECT * FROM especialidades; """)
+    for linha in cur.fetchall():
+        print(linha)
+    print('servicos_especialidades-------------------------------------')
+    cur.execute("""SELECT * FROM servicos_especialidades; """)
+    for linha in cur.fetchall():
+        print(linha)
+    print('tipo_servicos-------------------------------------')
+    cur.execute("""SELECT * FROM tipo_servico; """)
+    for linha in cur.fetchall():
+        print(linha)
+    print('frequencias-------------------------------------')
+    cur.execute("""SELECT * FROM frequencias; """)
+    for linha in cur.fetchall():
+        print(linha)
 
 def ProduzirDados():
     DropTable()
@@ -173,18 +197,20 @@ def ProduzirDados():
     CriarServicosEspecialidades()
     CriarTipoServico()
     CriarFrequencias()
-    # AdicionarPacientes('Regis','000000000','00000000000','1995-09-01','M')
-    # AdicionarPacientes('Aloisio','111111111','11111111111','1935-10-05','M')
-    # AdicionarPacientes('Bruna','222222222','22222222222','2001-06-22','F')
-    # AdicionarPacientes('Wladi','333333333','33333333333','1966-12-03','M')
-    # AdicionarAtendimentos(1,'2015-05-22',80,1.75,'O paciente fez xyz',1)
-    # AdicionarAtendimentos(1,'2019-10-26',90,1.80,'O paciente fez xyz',2)
-    # AdicionarAtendimentos(2,'2015-10-06',75,1.77,'O paciente fez xyz',2)
-    # AdicionarAtendimentos(3,'2018-19-06',65,1.65,'O paciente fez xyz',5)
-    # AdicionarAtendimentos(3,'2019-10-26',75,1.70,'O paciente fez xyz',3)
-    # AdicionarAtendimentos(4,'2020-10-26',75,1.70,'O paciente fez xyz',3)
-    # AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',2)
-    # AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',1)
+    AdicionarPacientes('Regis','000000000','00000000000','1995-09-01','M')
+    AdicionarPacientes('Aloisio','111111111','11111111111','1935-10-05','M')
+    AdicionarPacientes('Bruna','222222222','22222222222','2001-06-22','F')
+    AdicionarPacientes('Wladi','333333333','33333333333','1966-12-03','M')
+    AdicionarAtendimentos(1,'2015-05-22',80,1.75,'O paciente fez xyz',1)
+    AdicionarAtendimentos(1,'2019-10-26',90,1.80,'O paciente fez xyz',2)
+    AdicionarAtendimentos(2,'2015-10-06',75,1.77,'O paciente fez xyz',2)
+    AdicionarAtendimentos(3,'2018-19-06',65,1.65,'O paciente fez xyz',5)
+    AdicionarAtendimentos(3,'2019-10-26',75,1.70,'O paciente fez xyz',3)
+    AdicionarAtendimentos(4,'2020-10-26',75,1.70,'O paciente fez xyz',3)
+    AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',2)
+    AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',1)
+
+
     # AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10)
     # AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100)
     # AdicionarServico(30207045,'Redução de fratura de seio frontal',1000)
@@ -194,6 +220,7 @@ def ProduzirDados():
     # AdicionarAtendimentos_servico(3,1,'2015-05-22') #m
     # AdicionarAtendimentos_servico(4,4,'2019-05-22') #f
     # AdicionarAtendimentos_servico(5,4,'2015-05-22') #f
+    LerTabela()
 
 def main():
     ProduzirDados()
