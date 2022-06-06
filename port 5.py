@@ -9,6 +9,12 @@ def DropTable():
     cur.execute("""DROP TABLE IF EXISTS atendimento""")
     cur.execute("""DROP TABLE IF EXISTS atendimento_servico""")
     cur.execute("""DROP TABLE IF EXISTS servico""")
+    cur.execute("""DROP TABLE IF EXISTS medicos_especialidades""")
+    cur.execute("""DROP TABLE IF EXISTS medicos""")
+    cur.execute("""DROP TABLE IF EXISTS especialidades""")
+    cur.execute("""DROP TABLE IF EXISTS servicos_especialidades""")
+    cur.execute("""DROP TABLE IF EXISTS tipo_servico""")
+    cur.execute("""DROP TABLE IF EXISTS frequencias""")
 
 def CriarPacientes ():
     cur.execute("""CREATE TABLE pacientes (
@@ -55,7 +61,7 @@ def CriarServico():
     Descricao VARCHAR(45) NOT NULL,
     Valor FLOAT NOT NULL,
     Tipo_servico_ID INTEGER NOT NULL,
-    FOREIGN KEY (Tipo_Servico) REFERENCES tipo_servico(ID)
+    FOREIGN KEY (Tipo_servico_ID) REFERENCES tipo_servico(ID)
     );
     """)
 
@@ -69,8 +75,8 @@ def CriarMedicoEspecialidades():
     """)
 
 def CriarMedicos():
-    cur.execute("""CREATE TABLE medico(
-    ID INTEGER NOT NULL PRIMARY KEY AUTOCREMENT,
+    cur.execute("""CREATE TABLE medicos(
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     Nome VARCHAR(100) NOT NULL,
     CRM VARCHAR(10)
     );
@@ -78,11 +84,40 @@ def CriarMedicos():
 
 def CriarEspecialidades():
     cur.execute("""CREATE TABLE especialidades (
-    ID INTEGER NOT NULL PRIMARY KEY AUTOCREMENT,
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     Nome VARCHAR(45) NOT NULL,
     CID10_CAT VARCHAR(8) NOT NULL
     );
     """)
+def CriarServicosEspecialidades():
+    cur.execute("""CREATE TABLE servicos_especialidades (
+    Servico_ID INTEGER NOT NULL,
+    Especialidades_ID INTEGER NOT NULL,
+    FOREIGN KEY (Servico_ID) REFERENCES servico(ID),
+    FOREIGN KEY (Especialidades_ID) REFERENCES especialidades(ID),
+    PRIMARY KEY (Servico_ID,Especialidades_ID)
+    );
+    """)
+
+def CriarFrequencias():
+    cur.execute("""CREATE TABLE frequencias (
+    Servico_ID int NOT NULL PRIMARY KEY,
+    Sexo VARCHAR(1),
+    QtdePeriodo INTEGER NOT NULL,
+    PeriodoMeses INTEGER NOT NULL,
+    IdadeMin INTEGER NOT NULL,
+    IdadeMax INTEGER NOT NULL
+    );
+    """)
+
+def CriarTipoServico():
+    cur.execute("""CREATE TABLE tipo_servico (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Tipo_Servico VARCHAR(45)
+    );
+    """)
+
+
 def AdicionarPacientes(nome,rg,cpf,nasc,sexo):
     cur.execute(""" INSERT INTO pacientes (nome,rg,cpf,nasc,sexo)
     VALUES (?,?,?,?,?)""",(nome,rg,cpf,nasc,sexo))
@@ -132,24 +167,35 @@ def ProduzirDados():
     CriarServico()
     CriarAtendimento_Servico()
     CriarPacientes()
-    AdicionarPacientes('Regis','000000000','00000000000','1995-09-01','M')
-    AdicionarPacientes('Aloisio','111111111','11111111111','1935-10-05','M')
-    AdicionarPacientes('Bruna','222222222','22222222222','2001-06-22','F')
-    AdicionarPacientes('Wladi','333333333','33333333333','1966-12-03','M')
-    AdicionarAtendimentos(1,'2015-05-22',80,1.75,'O paciente fez xyz',1)
-    AdicionarAtendimentos(1,'2019-10-26',90,1.80,'O paciente fez xyz',2)
-    AdicionarAtendimentos(2,'2015-10-06',75,1.77,'O paciente fez xyz',2)
-    AdicionarAtendimentos(3,'2018-19-06',65,1.65,'O paciente fez xyz',5)
-    AdicionarAtendimentos(3,'2019-10-26',75,1.70,'O paciente fez xyz',3)
-    AdicionarAtendimentos(4,'2020-10-26',75,1.70,'O paciente fez xyz',3)
-    AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',2)
-    AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',1)
-    AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10)
-    AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100)
-    AdicionarServico(30207045,'Redução de fratura de seio frontal',1000)
-    AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000)
-    AdicionarAtendimentos_servico(1,1,'2015-05-22') #m
-    AdicionarAtendimentos_servico(1,2,'2015-05-22') #M
-    AdicionarAtendimentos_servico(3,1,'2015-05-22') #m
-    AdicionarAtendimentos_servico(4,4,'2019-05-22') #f
-    AdicionarAtendimentos_servico(5,4,'2015-05-22') #f
+    CriarMedicoEspecialidades()
+    CriarMedicos()
+    CriarEspecialidades()
+    CriarServicosEspecialidades()
+    CriarTipoServico()
+    CriarFrequencias()
+    # AdicionarPacientes('Regis','000000000','00000000000','1995-09-01','M')
+    # AdicionarPacientes('Aloisio','111111111','11111111111','1935-10-05','M')
+    # AdicionarPacientes('Bruna','222222222','22222222222','2001-06-22','F')
+    # AdicionarPacientes('Wladi','333333333','33333333333','1966-12-03','M')
+    # AdicionarAtendimentos(1,'2015-05-22',80,1.75,'O paciente fez xyz',1)
+    # AdicionarAtendimentos(1,'2019-10-26',90,1.80,'O paciente fez xyz',2)
+    # AdicionarAtendimentos(2,'2015-10-06',75,1.77,'O paciente fez xyz',2)
+    # AdicionarAtendimentos(3,'2018-19-06',65,1.65,'O paciente fez xyz',5)
+    # AdicionarAtendimentos(3,'2019-10-26',75,1.70,'O paciente fez xyz',3)
+    # AdicionarAtendimentos(4,'2020-10-26',75,1.70,'O paciente fez xyz',3)
+    # AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',2)
+    # AdicionarAtendimentos(4,'2019-10-26',75,1.70,'O paciente fez xyz',1)
+    # AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10)
+    # AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100)
+    # AdicionarServico(30207045,'Redução de fratura de seio frontal',1000)
+    # AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000)
+    # AdicionarAtendimentos_servico(1,1,'2015-05-22') #m
+    # AdicionarAtendimentos_servico(1,2,'2015-05-22') #M
+    # AdicionarAtendimentos_servico(3,1,'2015-05-22') #m
+    # AdicionarAtendimentos_servico(4,4,'2019-05-22') #f
+    # AdicionarAtendimentos_servico(5,4,'2015-05-22') #f
+
+def main():
+    ProduzirDados()
+
+main()
