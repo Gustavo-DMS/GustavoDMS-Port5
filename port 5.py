@@ -129,11 +129,13 @@ def AdicionarAtendimentos(id_pac,data_at,peso,altura,desc,Manchester):
     con.commit()
 
 def AdicionarTipoServico(tipo_serv):
-    cur.execute("""INSERT INTO tipo_servico (Tipo_servico) VALUES (?);""",(tipo_serv,))
+    cur.execute("""INSERT INTO tipo_servico (Tipo_servico) 
+    VALUES (?);""",(tipo_serv,))
+    con.commit()
 
-def AdicionarAtendimentos_servico(at_id,serv_Id,data):
-    cur.execute(""" INSERT INTO atendimento_servico (Atendimento_ID,Servico_ID,Data) 
-    VALUES (?,?,?)""",(at_id,serv_Id,data))
+def AdicionarAtendimentos_servico(at_id,serv_Id,data,med_id):
+    cur.execute(""" INSERT INTO atendimento_servico (Atendimento_ID,Servico_ID,Data,Medicos_id) 
+    VALUES (?,?,?,?)""",(at_id,serv_Id,data,med_id))
     cur.execute("""UPDATE atendimento_servico 
     SET Valor_do_servico = (SELECT servico.Valor FROM servico WHERE servico.ID = atendimento_servico.Servico_ID)
     WHERE Atendimento_ID = ?
@@ -145,6 +147,30 @@ def AdicionarServico(TUSS,Desc,Valor,tipo_serv):
     cur.execute(""" INSERT INTO servico (Codigo_TUSS,Descricao,Valor,Tipo_servico_ID) 
     VALUES (?,?,?,?)""",(TUSS,Desc,Valor,tipo_serv))
     con.commit()
+
+def AdicionarEspecialidade(nome,cid):
+    cur.execute("""INSERT INTO especialidades (nome,CID10_CAT) 
+    VALUES (?,?)""",(nome,cid,))
+    con.commit()
+
+def AdicionarMedicos(nome,crm):
+    cur.execute("""INSERT INTO medicos (Nome,CRM)
+    VALUES (?,?)""",(nome,crm,))
+    con.commit()
+
+def AdicionarMedicoespecialidades(med_id,esp_id):
+    cur.execute("""INSERT INTO medicos_especialidades (Medicos_ID,Especialidades_ID) 
+    VALUES (?,?)""",(med_id,esp_id,))
+    con.commit()
+
+def AdicionarServicosEspecialidades(serv_Id,esp_id):
+    cur.execute("""INSERT INTO servicos_especialidades (Servico_ID,Especialidades_ID)
+    VALUES (?,?)""",(serv_Id,esp_id,))
+    con.commit()
+
+def AdicionarFrequencias(serv_Id,sexo,Qtd_per,periodo_mes,Idade_min,Idade_max):
+    cur.execute("""INSERT INTO frequencias (Servico_ID,Sexo,QtdePeriodo,PeriodoMeses,IdadeMin,IdadeMax)
+    VALUES (?,?,?,?,?,?)""",(serv_Id,sexo,Qtd_per,periodo_mes,Idade_min,Idade_max,))
 
 def LerTabela():
     print('Atendimentos -------------------------')
@@ -220,15 +246,41 @@ def ProduzirDados():
     AdicionarServico(30310040,'Cirurgias fistulizantes com implantes valvulares',10,1)
     AdicionarServico(30213037,'Istmectomia ou nodulectomia - tireoide',100,2)
     AdicionarServico(30207045,'Redução de fratura de seio frontal',1000,3)
-    AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000,4)
+    AdicionarServico(30101875, 'Tratamento de escaras ou ulcerações com retalhos cutâneos locais',10000,3)
     AdicionarServico(20101074,'Avaliacao nutricional inclui consulta',500.50,5)
     AdicionarServico(30203023,'Tumor de lingua tratamento cirurgico',1500.25,1)
     AdicionarServico(30718015,'Amputacao ao nivel do braco tratamento cirurgico',1030.0,2)
-    # AdicionarAtendimentos_servico(1,1,'2015-05-22') #m
-    # AdicionarAtendimentos_servico(1,2,'2015-05-22') #M
-    # AdicionarAtendimentos_servico(3,1,'2015-05-22') #m
-    # AdicionarAtendimentos_servico(4,4,'2019-05-22') #f
-    # AdicionarAtendimentos_servico(5,4,'2015-05-22') #f
+    AdicionarEspecialidade('pediatria',1)
+    AdicionarEspecialidade('Radiologia',2)
+    AdicionarEspecialidade('Oncologia',3)
+    AdicionarEspecialidade('Dermatologia',4)
+    AdicionarMedicos('Walter',468754)
+    AdicionarMedicos('Marcos',4463546)
+    AdicionarMedicos('Roberto',45621676)
+    AdicionarMedicos('Jandir Biroliro',6621615)
+    AdicionarMedicoespecialidades(1,1)
+    AdicionarMedicoespecialidades(2,2)
+    AdicionarMedicoespecialidades(3,3)
+    AdicionarMedicoespecialidades(4,4)
+    AdicionarServicosEspecialidades(1,1)
+    AdicionarServicosEspecialidades(2,2)
+    AdicionarServicosEspecialidades(3,3)
+    AdicionarServicosEspecialidades(4,4)
+    AdicionarServicosEspecialidades(5,1)
+    AdicionarServicosEspecialidades(6,2)
+    AdicionarFrequencias(1,'A',1,1500,15,30)
+    AdicionarFrequencias(2,'A',1,30,1,10)
+    AdicionarFrequencias(3,'F',1,1,0,120)
+    AdicionarFrequencias(4,'F',1,10,30,80)
+    AdicionarFrequencias(5,'F',1,50,12,30)
+    AdicionarFrequencias(6,'A',1,0,100,900)
+    AdicionarFrequencias(7,'M',1,5,5,120)
+    AdicionarAtendimentos_servico(1,1,'2015-05-22',1) #m
+    AdicionarAtendimentos_servico(2,1,'2015-05-22',1) #M
+    AdicionarAtendimentos_servico(3,3,'2015-05-22',3) #m ERRADO SEXO
+    AdicionarAtendimentos_servico(4,4,'2019-05-22',4) #f
+    AdicionarAtendimentos_servico(5,7,'2019-05-22',1) #f ERRADO SEXO
+    AdicionarAtendimentos_servico(7,5,'2015-05-22',4) #f ERRADO ESP
     LerTabela()
 
 def main():
