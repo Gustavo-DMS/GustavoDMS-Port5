@@ -290,8 +290,31 @@ def FaltaRelação():
     WHERE servicos_especialidades.Servico_ID is null """)
     print(cur.fetchall())
 
+def ContServico():
+    cur.execute("""SELECT COUNT(Servico_ID),servico.ID 
+    FROM servico LEFT JOIN atendimento_servico
+    ON servico.ID = atendimento_servico.Servico_ID
+    GROUP BY (servico.ID) """)
+    print(cur.fetchall())
+
+def OverServico():
+    cur.execute("""SELECT pacientes.Nome 
+    FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
+    INNER JOIN atendimento_servico ON atendimento.ID = atendimento_servico.Atendimento_ID
+    INNER JOIN servico ON servico.ID = atendimento_servico.Servico_ID
+    INNER JOIN frequencias ON servico.ID = frequencias.Servico_ID
+    WHERE frequencias.PeriodoMeses = 1500
+    GROUP BY servico.ID
+    HAVING COUNT(frequencias.Servico_ID) > 1
+    
+    ;
+    """)
+    print(cur.fetchall())
 
 def main():
+    ProduzirDados()
     FaltaRelação()
+    ContServico()
+    OverServico()
 
 main()
