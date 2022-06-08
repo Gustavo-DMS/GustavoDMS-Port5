@@ -268,19 +268,19 @@ def ProduzirDados():
     AdicionarServicosEspecialidades(4,4)
     AdicionarServicosEspecialidades(5,1)
     AdicionarServicosEspecialidades(6,2)
-    AdicionarFrequencias(1,'A',1,1500,15,30)
-    AdicionarFrequencias(2,'A',1,30,1,10)
-    AdicionarFrequencias(3,'F',1,1,0,120)
+    AdicionarFrequencias(1,'M',1,1500,15,30)
+    AdicionarFrequencias(2,'M',1,30,1,10)
+    AdicionarFrequencias(3,'A',1,1,0,120)
     AdicionarFrequencias(4,'F',1,10,30,80)
     AdicionarFrequencias(5,'F',1,50,12,30)
     AdicionarFrequencias(6,'A',1,0,100,900)
     AdicionarFrequencias(7,'M',1,5,5,120)
     AdicionarAtendimentos_servico(1,1,'2015-05-22',1) #m
     AdicionarAtendimentos_servico(2,1,'2015-05-22',1) #M
-    AdicionarAtendimentos_servico(3,3,'2015-05-22',3) #m ERRADO SEXO
-    AdicionarAtendimentos_servico(4,4,'2019-05-22',4) #f
-    AdicionarAtendimentos_servico(5,7,'2019-05-22',1) #f ERRADO SEXO
-    AdicionarAtendimentos_servico(7,5,'2015-05-22',4) #f ERRADO ESP
+    AdicionarAtendimentos_servico(3,3,'2015-05-22',3) #m alosio ERRADO SEXO
+    AdicionarAtendimentos_servico(4,4,'2019-05-22',4) #f bruna 
+    AdicionarAtendimentos_servico(5,7,'2019-05-22',1) #f bruna ERRADO SEXO
+    AdicionarAtendimentos_servico(7,5,'2015-05-22',4) #m wladi ERRADO ESP
     LerTabela()
 
 def FaltaRelação():
@@ -298,23 +298,48 @@ def ContServico():
     print(cur.fetchall())
 
 def OverServico():
-    cur.execute("""SELECT pacientes.Nome 
+    cur.execute("""SELECT pacientes.Nome
     FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
     INNER JOIN atendimento_servico ON atendimento.ID = atendimento_servico.Atendimento_ID
     INNER JOIN servico ON servico.ID = atendimento_servico.Servico_ID
     INNER JOIN frequencias ON servico.ID = frequencias.Servico_ID
     WHERE frequencias.PeriodoMeses = 1500
     GROUP BY servico.ID
-    HAVING COUNT(frequencias.Servico_ID) > 1
-    
+    HAVING COUNT(frequencias.Servico_ID) > 1    
     ;
     """)
     print(cur.fetchall())
 
+def IncompatibilidadeSexo():
+    cur.execute("""SELECT servico.ID,pacientes.Nome,pacientes.sexo,frequencias.sexo
+    FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
+    INNER JOIN atendimento_servico ON atendimento.ID = atendimento_servico.Atendimento_ID
+    INNER JOIN servico ON servico.ID = atendimento_servico.Servico_ID
+    INNER JOIN frequencias ON servico.ID = frequencias.Servico_ID
+    WHERE frequencias.sexo <> pacientes.sexo AND frequencias.sexo <> 'A' """)
+    print(cur.fetchall())
+
+def ErroEspecialidade():
+    cur.execute("""SELECT servico.ID,especialidades.Nome,teste.Nome
+    FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
+    INNER JOIN atendimento_servico ON atendimento.ID = atendimento_servico.Atendimento_ID
+    INNER JOIN servico ON servico.ID = atendimento_servico.Servico_ID
+    INNER JOIN servicos_especialidades ON servicos_especialidades.Servico_ID = servico.ID
+    INNER JOIN especialidades ON servicos_especialidades.Especialidades_ID = especialidades.ID
+    INNER JOIN medicos ON atendimento_servico.Medicos_ID = medicos.ID
+    INNER JOIN medicos_especialidades ON medicos_especialidades.Medicos_ID = medicos.ID
+    INNER JOIN especialidades as teste on teste.ID = medicos_especialidades.Especialidades_ID
+    WHERE medicos_especialidades.especialidades_ID <> servicos_especialidades.Especialidades_ID
+    
+    """)
+    print(cur.fetchall())
+
 def main():
-    ProduzirDados()
+    # ProduzirDados()
     FaltaRelação()
     ContServico()
     OverServico()
+    IncompatibilidadeSexo()
+    ErroEspecialidade()
 
 main()
