@@ -150,7 +150,7 @@ def AdicionarServico(TUSS,Desc,Valor,tipo_serv):
 
 def AdicionarEspecialidade(nome,cid):
     cur.execute("""INSERT INTO especialidades (nome,CID10_CAT) 
-    VALUES (?,?)""",(nome,cid,))
+    VALUES (?,?)""",(nome,cid))
     con.commit()
 
 def AdicionarMedicos(nome,crm):
@@ -283,7 +283,15 @@ def ProduzirDados():
     AdicionarAtendimentos_servico(7,5,'2015-05-22',4) #f ERRADO ESP
     LerTabela()
 
+def FaltaRelação():
+    cur.execute("""SELECT servico.ID 
+    FROM servico LEFT JOIN servicos_especialidades
+    ON servicos_especialidades.Servico_ID = servico.ID
+    WHERE servicos_especialidades.Servico_ID is null """)
+    print(cur.fetchall())
+
+
 def main():
-    ProduzirDados()
+    FaltaRelação()
 
 main()
