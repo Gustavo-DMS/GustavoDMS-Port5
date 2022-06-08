@@ -259,6 +259,7 @@ def ProduzirDados():
     AdicionarMedicos('Roberto',45621676)
     AdicionarMedicos('Jandir Biroliro',6621615)
     AdicionarMedicoespecialidades(1,1)
+    AdicionarMedicoespecialidades(1,2)
     AdicionarMedicoespecialidades(2,2)
     AdicionarMedicoespecialidades(3,3)
     AdicionarMedicoespecialidades(4,4)
@@ -276,12 +277,12 @@ def ProduzirDados():
     AdicionarFrequencias(6,'A',1,0,100,900)
     AdicionarFrequencias(7,'M',1,5,5,120)
     AdicionarAtendimentos_servico(1,1,'2015-05-22',1) #m
-    AdicionarAtendimentos_servico(2,1,'2015-05-22',1) #M
+    AdicionarAtendimentos_servico(2,3,'2015-05-22',3) #M
     AdicionarAtendimentos_servico(3,3,'2015-05-22',3) #m alosio ERRADO SEXO
     AdicionarAtendimentos_servico(4,4,'2019-05-22',4) #f bruna 
     AdicionarAtendimentos_servico(5,7,'2019-05-22',1) #f bruna ERRADO SEXO
     AdicionarAtendimentos_servico(7,5,'2015-05-22',4) #m wladi ERRADO ESP
-    LerTabela()
+    # LerTabela()
 
 def FaltaRelação():
     cur.execute("""SELECT servico.ID 
@@ -320,7 +321,7 @@ def IncompatibilidadeSexo():
     print(cur.fetchall())
 
 def ErroEspecialidade():
-    cur.execute("""SELECT servico.ID,especialidades.Nome,teste.Nome
+    cur.execute("""SELECT servico.ID,especialidades.Nome,MedEsp.Nome,medicos.nome
     FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
     INNER JOIN atendimento_servico ON atendimento.ID = atendimento_servico.Atendimento_ID
     INNER JOIN servico ON servico.ID = atendimento_servico.Servico_ID
@@ -328,18 +329,18 @@ def ErroEspecialidade():
     INNER JOIN especialidades ON servicos_especialidades.Especialidades_ID = especialidades.ID
     INNER JOIN medicos ON atendimento_servico.Medicos_ID = medicos.ID
     INNER JOIN medicos_especialidades ON medicos_especialidades.Medicos_ID = medicos.ID
-    INNER JOIN especialidades as teste on teste.ID = medicos_especialidades.Especialidades_ID
-    WHERE medicos_especialidades.especialidades_ID <> servicos_especialidades.Especialidades_ID
-    
+    INNER JOIN especialidades as MedEsp on MedEsp.ID = medicos_especialidades.Especialidades_ID
+    WHERE medicos_especialidades.Especialidades_ID NOT IN (servicos_especialidades.Especialidades_ID)
     """)
     print(cur.fetchall())
 
 def main():
     # ProduzirDados()
-    FaltaRelação()
-    ContServico()
-    OverServico()
-    IncompatibilidadeSexo()
+    # LerTabela()
+    # FaltaRelação()
+    # ContServico()
+    # OverServico()
+    # IncompatibilidadeSexo()
     ErroEspecialidade()
 
 main()
