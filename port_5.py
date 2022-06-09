@@ -493,32 +493,12 @@ def IncompatibilidadeSexo(con):
 def ErroEspecialidade(con):
     try:
         cur = con.cursor()
-        cur.execute("""SELECT Medicos_ID,Especialidades_ID from medicos_especialidades
-        """)
-        result_med = cur.fetchall()
-        especialidades = {}
-        for i in (result_med):
-            try:
-                especialidades[i[0]].append(i[1])
-            except:
-                especialidades[i[0]] = list()
-                especialidades[i[0]].append(i[1])
-        cur.execute("""SELECT m.id,s_esp.Especialidades_ID,at_serv.Atendimento_ID,at_serv.Servico_ID,at_serv.Data
-        FROM atendimento_servico at_serv INNER JOIN medicos m ON m.ID = at_serv.Medicos_ID
-        INNER JOIN servico s ON s.ID = at_serv.Servico_ID
-        INNER JOIN servicos_especialidades s_esp on s_esp.Servico_ID = s.ID
-        """)
-        especialidade_requirida = cur.fetchall()
-        dict_medicos = {}
-        for i in especialidade_requirida:
-            if i[1] not in (especialidades[i[0]]):
-                dict_medicos[i[0]] = list()
-                dict_medicos[i[0]].append(i)
+        
     except Exception as e:
         print("Ocorreu o erro ao verificar medicos especialidade:",e)
     else:
         cur.close()
-        return(dict_medicos)
+        return()
 
 def main():
     try:
