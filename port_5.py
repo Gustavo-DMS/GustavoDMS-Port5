@@ -531,13 +531,3 @@ def main():
 
 main()
 
-# cur.execute("""SELECT servico.ID,especialidades.Nome,MedEsp.Nome,medicos.nome
-#       FROM pacientes p INNER JOIN atendimento at ON p.ID = at.Paciente_ID
-#       INNER JOIN atendimento_servico at_serv ON at.ID = at_serv.Atendimento_ID
-#       INNER JOIN servico s ON s.ID = at_serv.Servico_ID
-#       INNER JOIN servicos_especialidades s_esp ON s_esp.Servico_ID = s.ID
-#       INNER JOIN especialidades esp ON s_esp.Especialidades_ID = esp.ID
-#       INNER JOIN medicos m ON at_serv.Medicos_ID = m.ID
-#       INNER JOIN medicos_especialidades m_esp ON m_esp.Medicos_ID = m.ID
-#       INNER JOIN especialidades as MedEsp on MedEsp.ID = m_esp.Especialidades_ID
-#     """)
