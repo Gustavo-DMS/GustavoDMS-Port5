@@ -509,7 +509,6 @@ def ErroEspecialidade(con):
         INNER JOIN servicos_especialidades s_esp on s_esp.Servico_ID = s.ID
         """)
         especialidade_requirida = cur.fetchall()
-        print(especialidade_requirida)
         dict_medicos = {}
         for i in especialidade_requirida:
             if i[1] not in (especialidades[i[0]]):
@@ -537,7 +536,6 @@ def main():
         con.close()
         print("O programa encerrou -------------------------------")
 
-main()
 
 # cur.execute("""SELECT servico.ID,especialidades.Nome,MedEsp.Nome,medicos.nome
 #       FROM pacientes p INNER JOIN atendimento at ON p.ID = at.Paciente_ID
