@@ -493,17 +493,17 @@ def IncompatibilidadeSexo(con):
 def ErroEspecialidade(con):
     try:
         cur = con.cursor()
-        cur.execute("""SELECT s.ID,esp.Nome,MedEsp.Nome,m.nome
+        cur.execute("""SELECT m.nome,s.Descricao,esp.Nome
         FROM pacientes p INNER JOIN atendimento at ON p.ID = at.Paciente_ID
         INNER JOIN atendimento_servico at_serv ON at.ID = at_serv.Atendimento_ID
         INNER JOIN servico s ON s.ID = at_serv.Servico_ID
-        INNER JOIN servicos_especialidades s_esp ON s_esp.Servico_ID = s.ID
+        INNER JOIN servicos_especialidades s_esp ON s_esp.Servico_ID = at_serv.servico_ID
         INNER JOIN especialidades esp ON s_esp.Especialidades_ID = esp.ID
         INNER JOIN medicos m ON at_serv.Medicos_ID = m.ID
         INNER JOIN medicos_especialidades m_esp ON m_esp.Medicos_ID = m.ID
-        INNER JOIN especialidades as MedEsp on MedEsp.ID = m_esp.Especialidades_ID
         WHERE s_esp.Especialidades_ID NOT IN (
-        SELECT Especialidades_ID FROM medicos_especialidades WHERE at_serv.Medicos_ID = m_esp.Medicos_ID)
+        SELECT Especialidades_ID from medicos_especialidades me_esp WHERE me_esp.Medicos_ID = m.ID
+        )
         """)
         
     except Exception as e:
@@ -518,10 +518,10 @@ def main():
         con = sqlite3.connect("Hospital.db")
         # ProduzirDados(con)
         # LerTabela(con)
-        # print(FaltaRelação(con))
-        # print(ContServico(con))
-        # print(OverServico(con))
-        # print(IncompatibilidadeSexo(con))
+        print(FaltaRelação(con))
+        print(ContServico(con))
+        print(OverServico(con))
+        print(IncompatibilidadeSexo(con))
         print(ErroEspecialidade(con))
     except Exception as e:
         print("Ocorreu o erro no final:",e)
