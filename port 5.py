@@ -1,5 +1,4 @@
 import sqlite3
-import tkinter as tk
 
 def DropTable(con):
     try:
@@ -304,6 +303,7 @@ def AdicionarFrequencias(serv_Id,sexo,Qtd_per,periodo_mes,Idade_min,Idade_max,co
         print("Ocorreu o erro ao adicinar frequencias:",e)
     else:
         cur.close()
+
 def LerTabela(con):
     try:
         cur = con.cursor()
@@ -456,7 +456,6 @@ def ContServico(con):
 
 def OverServico(con):
     try:
-        
         cur = con.cursor()
         cur.execute("""SELECT pacientes.Nome,servico.ID,COUNT(frequencias.Servico_ID)
         FROM pacientes INNER JOIN atendimento ON pacientes.ID = atendimento.Paciente_ID
@@ -498,15 +497,12 @@ def ErroEspecialidade(con):
         """)
         result_med = cur.fetchall()
         especialidades = {}
-
         for i in (result_med):
             try:
                 especialidades[i[0]].append(i[1])
             except:
                 especialidades[i[0]] = list()
                 especialidades[i[0]].append(i[1])
-
-
         cur.execute("""SELECT m.id,s_esp.Especialidades_ID,at_serv.Atendimento_ID,at_serv.Servico_ID,at_serv.Data
         FROM atendimento_servico at_serv INNER JOIN medicos m ON m.ID = at_serv.Medicos_ID
         INNER JOIN servico s ON s.ID = at_serv.Servico_ID
@@ -519,12 +515,9 @@ def ErroEspecialidade(con):
             if i[1] not in (especialidades[i[0]]):
                 dict_medicos[i[0]] = list()
                 dict_medicos[i[0]].append(i)
-      
-
     except Exception as e:
-        print("Ocorreu o erro:",e)
+        print("Ocorreu o erro ao verificar medicos especialidade:",e)
     else:
-
         cur.close()
         return(dict_medicos)
 
@@ -545,8 +538,6 @@ def main():
         print("O programa encerrou -------------------------------")
 
 main()
-
-
 
 # cur.execute("""SELECT servico.ID,especialidades.Nome,MedEsp.Nome,medicos.nome
 #       FROM pacientes p INNER JOIN atendimento at ON p.ID = at.Paciente_ID
