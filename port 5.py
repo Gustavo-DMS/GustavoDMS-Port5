@@ -517,21 +517,14 @@ def ErroEspecialidade(con):
         dict_medicos = {}
         for i in especialidade_requirida:
             if i[1] not in (especialidades[i[0]]):
-                dict_medicos[i[0]] = i[1]
-        atendimento = especialidade_requirida[2]
-        servico = especialidade_requirida[3]
-        data = especialidade_requirida[4]
-        cur.execute("""SELECT m.id,s_esp.Especialidades_ID,at_serv.Atendimento_ID,at_serv.Servico_ID,at_serv.Data,m.Nome,s.Descricao 
-        FROM atendimento_servico at_serv INNER JOIN medicos m ON m.ID = at_serv.Medicos_ID
-        INNER JOIN servico s ON s.ID = at_serv.Servico_ID
-        INNER JOIN servicos_especialidades s_esp on s_esp.Servico_ID = s.ID
-        WHERE at_serv.Atendimento_ID = ? and at_serv.Servico_ID = ? and at_serv.Data = '?'
-        """,(atendimento,servico,data))
+                dict_medicos[i[0]] = list()
+                dict_medicos[i[0]].append(i)
+      
 
     except Exception as e:
         print("Ocorreu o erro:",e)
     else:
-        
+
         cur.close()
         return(dict_medicos)
 
