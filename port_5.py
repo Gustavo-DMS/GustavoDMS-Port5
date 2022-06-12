@@ -421,7 +421,7 @@ def ProduzirDados(con):
         AdicionarAtendimentos_servico(4,6,'2019-05-22',1,con) #f bruna 
         AdicionarAtendimentos_servico(5,7,'2019-05-22',1,con) #f bruna ERRADO SEXO
         AdicionarAtendimentos_servico(7,5,'2015-05-22',2,con) #m wladi ERRADO ESP
-        # LerTabela()
+        LerTabela(con)
     except Exception as e:
         print("Ocorreu o erro ao produzir dados:",e)
 
@@ -516,8 +516,7 @@ def ErroEspecialidade(con):
 def main():
     try:
         con = sqlite3.connect("Hospital.db")
-        # ProduzirDados(con)
-        # LerTabela(con)
+        ProduzirDados(con)
         print(FaltaRelação(con))
         print(ContServico(con))
         print(OverServico(con))
